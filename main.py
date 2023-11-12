@@ -1,11 +1,14 @@
-from machine import Pin
+from machine import Pin, Timer
 from utime import sleep
 from dht import DHT11
 from led import Led
+import micropython          # For emergency exception buffer
 
-from machine import Pin
-
+## Init ##
 led = Led()
+micropython.alloc_emergency_exception_buf(100)      # For emergency exception buffer
+timerTask1ms = Timer()                              # TODO fai libreria timersw
+## -- ##
 
 while True:
     try:
