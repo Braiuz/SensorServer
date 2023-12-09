@@ -8,6 +8,9 @@ import usocket as socket
 import utime
 from struct import pack
 
+## CONST ##
+MSGLEN_BYTE = 24        # int (64) + float (64) + float (64) = 8 + 8 + 8 = 24 byte
+
 ## GLOBAL VAR ##
 temperature = 0.0
 humidity = 0.0
@@ -69,8 +72,6 @@ except KeyboardInterrupt:
 
 # Socket init
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-clientSocket.connect((serverIp, serverPort))
-print("Connected to: " + serverIp + ":" + serverPort)
 
 print("Pi initialization done")
 ## -- ##
@@ -84,8 +85,13 @@ while True:
     print("Temperature: {}".format(temperature))
     print("Humidity: {}".format(humidity))
 
+    # marshal data
     msgBytes = pack('<iff', time, temperature, humidity)
 
+    print(f"Msg len = {len(msgBytes)}")
+
+    clientSocket.connect((serverIp, serverPort))
+    print("Connected to: " + serverIp + ":" + serverPort)
     SocketSend(clientSocket, msg=msgBytes, msgLen=len(msgBytes))
     
     led.toogle()
